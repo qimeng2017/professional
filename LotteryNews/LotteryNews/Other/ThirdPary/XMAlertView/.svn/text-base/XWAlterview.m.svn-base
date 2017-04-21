@@ -1,0 +1,295 @@
+//
+//  XWAlterview.m
+//  new
+//
+//  Created by chinat2t on 14-11-6.
+//  Copyright (c) 2014年 chinat2t. All rights reserved.
+//
+
+#import "XWAlterview.h"
+#import "UIImageView+WebCache.h"
+
+// 设置警告框的长和宽
+
+#define Alertwidth (SCREENSIZE.width*3.0/4.0)
+#define Alertheigth (Alertwidth*4.0/5.0)
+#define XWtitlegap 15.0f
+#define XWtitleofheigth 25.0f
+#define XWSinglebuttonWidth 160.0f
+//        单个按钮时的宽度
+#define XWdoublebuttonWidth 80.0f
+//        双个按钮的宽度
+#define XWbuttonHeigth 40.0f
+//        按钮的高度
+#define XWbuttonbttomgap 10.0f
+//        设置按钮距离底部的边距
+
+#define ScreenWideh ([UIScreen mainScreen].bounds.size)
+@interface XWAlterview ()<UITextFieldDelegate>
+{
+    BOOL _leftLeave;
+}
+
+@property (nonatomic, strong) UIView *whiteView;
+@property (nonatomic, strong) UILabel *alertTitleLabel;
+@property (nonatomic, strong) UILabel *alertContentLabel;
+@property (nonatomic, strong) UIButton *leftbtn;
+@property (nonatomic, strong) UIButton *rightbtn;
+@property (nonatomic, strong) UIView *backimageView;
+
+@property (nonatomic, strong) UIImageView *iconImageView;
+
+@end
+
+@implementation XWAlterview
+
+
+
++ (CGFloat)alertWidth
+{
+    return Alertwidth;
+}
+
++ (CGFloat)alertHeight
+{
+    return Alertheigth;
+}
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        // Initialization code
+    }
+    return self;
+}
++(XWAlterview*)showmessage:(NSString *)message subtitle:(NSString *)subtitle cancelbutton:(NSString *)cancle
+{
+    XWAlterview *alert = [[XWAlterview alloc] initWithTitle:message contentText:subtitle leftButtonTitle:nil rightButtonTitle:cancle withIconString:nil];
+    [alert show];
+    alert.rightBlock = ^() {
+        NSLog(@"right button clicked");
+    };
+    alert.dismissBlock = ^() {
+        NSLog(@"cancel button clicked");
+    };
+    return alert;
+}
+
+- (CGSize)sizeWithText:(NSString *)text font:(UIFont *)font maxW:(CGFloat)maxW
+{
+    NSMutableDictionary *attrs = [NSMutableDictionary dictionary];
+    attrs[NSFontAttributeName] = font;
+    CGSize maxSize = CGSizeMake(maxW, MAXFLOAT);
+    return [text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin| NSStringDrawingUsesFontLeading attributes:attrs context:nil].size;
+}
+
+- (id)initWithTitle:(NSString *)title
+        contentText:(NSString *)content
+    leftButtonTitle:(NSString *)leftTitle
+   rightButtonTitle:(NSString *)rigthTitle
+ withIconString:(NSString *)iconString
+{
+    if (self = [super init]) {
+//        self.layer.cornerRadius = 5.0;
+        
+        _whiteView = [[UIView alloc] initWithFrame:CGRectMake((SCREENSIZE.width - Alertwidth) * 0.5, (SCREENSIZE.height - Alertheigth) * 0.5, Alertwidth, Alertheigth)];
+        _whiteView.backgroundColor = [UIColor getColor:@"ffffff"];
+        _whiteView.layer.cornerRadius = 5.0;
+        [self addSubview:_whiteView];
+        
+        self.backgroundColor = [UIColor getColor:@"000000" alpha:0.6];
+        self.alertTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, XWtitlegap-8, Alertwidth-20, XWtitleofheigth)];
+        self.alertTitleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
+        self.alertTitleLabel.textColor=[UIColor blackColor];
+        self.alertTitleLabel.textAlignment = NSTextAlignmentLeft;
+        [_whiteView addSubview:self.alertTitleLabel];
+        
+        CGFloat imageWidth = Alertheigth-CGRectGetMaxY(self.alertTitleLabel.frame)-10-20-XWbuttonHeigth-36;
+        self.iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(self.alertTitleLabel.frame)+10, imageWidth, imageWidth)];
+        [self.iconImageView setBackgroundColor:[UIColor blackColor]];
+        if ([[iconString lowercaseString] hasPrefix:@"http"]) {
+            [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:iconString] placeholderImage:[UIImage imageNamed:@"imageDefault"]];
+        }
+        else
+        {
+            [self.iconImageView setImage:[UIImage imageNamed:iconString]];
+        }
+        
+        [_whiteView addSubview:self.iconImageView];
+        
+        CGFloat contentLabelWidth = Alertwidth - imageWidth-30;
+        CGSize size = [self sizeWithText:content font:[UIFont systemFontOfSize:13.0f] maxW:contentLabelWidth];
+        self.alertContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth+20, CGRectGetMaxY(self.alertTitleLabel.frame)+10, contentLabelWidth, size.height>imageWidth?imageWidth:size.height)];
+        self.alertContentLabel.numberOfLines = 0;
+        self.alertContentLabel.textColor = [UIColor getColor:@"000000" alpha:0.7];
+        self.alertContentLabel.font = [UIFont systemFontOfSize:13.0f];
+        [_whiteView addSubview:self.alertContentLabel];
+        //设置对齐方式
+        self.alertContentLabel.textAlignment = NSTextAlignmentLeft;
+        
+        self.text = [[UITextField alloc] initWithFrame:CGRectMake(10, CGRectGetMaxY(self.iconImageView.frame)+10, Alertwidth-25, 36)];
+        self.text.borderStyle = UITextBorderStyleNone;
+        self.text.layer.borderWidth = 0.5;
+        self.text.layer.borderColor = [[UIColor getColor:@"000000" alpha:0.5] CGColor];
+//        self.text.layer.borderColor = [[UIColor redColor] CGColor];
+        self.text.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 30)];
+        self.text.leftViewMode = UITextFieldViewModeAlways;
+        self.text.backgroundColor = [UIColor getColor:@"f9f8f9"];
+        self.text.placeholder = @"随便说两句吧...";
+        [self.text setValue:[UIColor getColor:@"000000" alpha:0.6] forKeyPath:@"_placeholderLabel.textColor"];
+        [self.text setValue:[UIFont systemFontOfSize:14] forKeyPath:@"_placeholderLabel.font"];
+        self.text.delegate = self;
+        [_whiteView addSubview:self.text];
+        
+        CGRect leftbtnFrame;
+        CGRect rightbtnFrame;
+        if (!leftTitle) {
+            rightbtnFrame = CGRectMake((Alertwidth - XWSinglebuttonWidth) * 0.5, Alertheigth - XWbuttonbttomgap - XWbuttonHeigth, XWSinglebuttonWidth, XWbuttonHeigth);
+            self.rightbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            self.rightbtn.frame = rightbtnFrame;
+            
+        }else {
+            leftbtnFrame = CGRectMake(0, Alertheigth - XWbuttonHeigth, Alertwidth/2, XWbuttonHeigth);
+            
+            rightbtnFrame = CGRectMake(CGRectGetMaxX(leftbtnFrame), Alertheigth - XWbuttonHeigth, Alertwidth/2, XWbuttonHeigth);
+            self.leftbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            self.rightbtn = [UIButton buttonWithType:UIButtonTypeCustom];
+            self.leftbtn.frame = leftbtnFrame;
+            self.rightbtn.frame = rightbtnFrame;
+        }
+        [self.rightbtn setTitle:rigthTitle forState:UIControlStateNormal];
+        [self.leftbtn setTitle:leftTitle forState:UIControlStateNormal];
+        
+        self.leftbtn.titleLabel.font = self.rightbtn.titleLabel.font = [UIFont boldSystemFontOfSize:15];
+        [self.leftbtn setTitleColor:[UIColor getColor:@"000000" alpha:0.6] forState:UIControlStateNormal];
+        [self.rightbtn setTitleColor:[UIColor getColor:@"38bd50"] forState:UIControlStateNormal];
+        [self.leftbtn addTarget:self action:@selector(leftbtnclicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self.rightbtn addTarget:self action:@selector(rightbtnclicked:) forControlEvents:UIControlEventTouchUpInside];
+        [_whiteView addSubview:self.leftbtn];
+        [_whiteView addSubview:self.rightbtn];
+        UIView * topview = [[UIView alloc] initWithFrame:CGRectMake(0, Alertheigth - XWbuttonHeigth, Alertwidth, 1)];
+        [topview setBackgroundColor:[UIColor getColor:@"000000" alpha:0.1]];
+        
+        UIView * centerView = [[UIView alloc] initWithFrame:CGRectMake(Alertwidth/2 - 0.5, Alertheigth - XWbuttonHeigth, 1, XWbuttonHeigth)];
+        [centerView setBackgroundColor:[UIColor getColor:@"000000" alpha:0.1]];
+        [_whiteView addSubview:topview];
+        [_whiteView addSubview:centerView];
+        
+        self.alertTitleLabel.text = title;
+        self.alertContentLabel.text = content;
+        
+        self.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
+    }
+    return self;
+}
+- (void)leftbtnclicked:(id)sender
+{
+    
+    if (self.leftBlock) {
+        self.leftBlock();
+    }
+    [self dismissAlert];
+}
+
+- (void)rightbtnclicked:(id)sender
+{
+    
+    if (self.rightBlock) {
+        self.rightBlock();
+    }
+    [self dismissAlert];
+}
+- (void)show
+{   //获取第一响应视图视图
+    UIViewController *topVC = [self appRootViewController];
+    self.frame = CGRectMake((CGRectGetWidth(topVC.view.bounds) - Alertwidth) * 0.5-30, (CGRectGetHeight(topVC.view.bounds) - Alertheigth) * 0.5-20, Alertwidth, Alertheigth);
+    [topVC.view addSubview:self];
+    self.alpha=0;
+}
+
+- (void)dismissAlert
+{
+    [self removeFromSuperview];
+    if (self.dismissBlock) {
+        self.dismissBlock();
+    }
+}
+
+- (UIViewController *)appRootViewController
+{
+
+    UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIViewController *topVC = appRootVC;
+    while (topVC.presentedViewController) {
+        topVC = topVC.presentedViewController;
+    }
+    return topVC;
+}
+
+
+- (void)removeFromSuperview
+{
+    [self.backimageView removeFromSuperview];
+    self.backimageView = nil;
+    UIViewController *topVC = [self appRootViewController];
+    CGRect afterFrame = CGRectMake((CGRectGetWidth(topVC.view.bounds) - Alertwidth) * 0.5+30, (CGRectGetHeight(topVC.view.bounds) - Alertheigth) * 0.5-30, Alertwidth, Alertheigth);
+    
+    [UIView animateWithDuration:0.3f delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        self.frame = afterFrame;
+        self.alpha=0;
+    } completion:^(BOOL finished) {
+        [super removeFromSuperview];
+    }];
+}
+//添加新视图时调用（在一个子视图将要被添加到另一个视图的时候发送此消息）
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    if (newSuperview == nil) {
+        return;
+    }
+    //     获取根控制器
+    UIViewController *topVC = [self appRootViewController];
+    
+    if (!self.backimageView) {
+        self.backimageView = [[UIView alloc] initWithFrame:topVC.view.bounds];
+        self.backimageView.backgroundColor = [UIColor clearColor];
+        self.backimageView.alpha = 0.6f;
+        self.backimageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
+    //    加载背景背景图,防止重复点击
+    [topVC.view addSubview:self.backimageView];
+//    CGRect afterFrame = CGRectMake((CGRectGetWidth(topVC.view.bounds) - Alertwidth) * 0.5, (CGRectGetHeight(topVC.view.bounds) - Alertheigth) * 0.5, Alertwidth, Alertheigth);
+    CGRect afterFrame = CGRectMake(0, 0, SCREENSIZE.width, SCREENSIZE.height);
+    [UIView animateWithDuration:0.3f delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.frame = afterFrame;
+        //self.alpha=0.9;
+    } completion:^(BOOL finished) {
+        self.alpha=1;
+    }];
+    [super willMoveToSuperview:newSuperview];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField{
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.whiteView setFrame:CGRectMake((SCREENSIZE.width - Alertwidth) * 0.5, (SCREENSIZE.height - Alertheigth) * 0.5-50, Alertwidth, Alertheigth)];
+    }];
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+    [UIView animateWithDuration:0.3 animations:^{
+        [self.whiteView setFrame:CGRectMake((SCREENSIZE.width - Alertwidth) * 0.5, (SCREENSIZE.height - Alertheigth) * 0.5, Alertwidth, Alertheigth)];
+    }];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    [self.text resignFirstResponder];
+}
+
+@end
+
+
+// 版权属于原作者
+// http://code4app.com (cn) http://code4app.net (en)
+// 发布代码于最专业的源码分享网站: Code4App.com 

@@ -1,0 +1,25 @@
+target 'LotteryNews' do
+
+pod 'MJRefresh'
+pod 'MJExtension'
+pod 'SDWebImage'
+pod 'SVProgressHUD'
+pod 'FMDB'
+pod 'DKNightVersion'
+pod 'AFNetworking'
+pod 'CYLTableViewPlaceHolder'
+pod 'Masonry'
+pod 'UMengAnalytics'
+pod 'TYAttributedLabel'
+pod 'MMPopLabel'
+pod 'JSONModel'
+pod 'Bugly'
+end
+
+target 'LotteryNewsTests' do
+
+end
+
+target 'LotteryNewsUITests' do
+
+end

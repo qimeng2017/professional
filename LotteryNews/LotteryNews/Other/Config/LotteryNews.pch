@@ -1,0 +1,183 @@
+//
+//  LotteryNews.pch
+//  LotteryNews
+//
+//  Created by 邹壮壮 on 2016/12/20.
+//  Copyright © 2016年 邹壮壮. All rights reserved.
+//
+
+#ifndef LotteryNews_pch
+#define LotteryNews_pch
+//判断是真机还是模拟器
+
+#if TARGET_OS_IPHONE
+//iPhone Device
+#endif
+#if TARGET_IPHONE_SIMULATOR
+//iPhone Simulator
+#endif
+//版本判断
+//是否等于版本 v
+#define SYSTEM_VERSION_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+//大于
+#define SYSTEM_VERSION_GREATER_THAN(v) (［[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+//大于或等于
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) (［[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+//小于
+#define SYSTEM_VERSION_LESS_THAN(v) (［[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+//小于或等于
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v) (［[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+//通用设备判断
+#define IS_OS_7_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0)
+
+/** 是否为iOS6 */
+#define iOS6 (([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.0) ? YES : NO)
+
+/** 是否为iOS7 */
+#define iOS7 (([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) ? YES : NO)
+
+/** 是否为iOS8 */
+#define iOS8 (([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) ? YES : NO)
+
+/** 是否为iOS9 */
+#define iOS9 (([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0) ? YES : NO)
+//Log
+//#if DEBUG
+//#define NSLog(format, ...) NSLog(@"\n文件: %@ \n方法: %s \n内容: %@ \n行数: %d", [[[NSString stringWithFormat:@"%s",__FILE__] componentsSeparatedByString:@"/"] lastObject],  __FUNCTION__, [NSString stringWithFormat:format, ##__VA_ARGS__], __LINE__);
+//#else
+//#define NSLog(format,...)
+//#endif
+
+
+//设备判断
+#define IS_OS_8_OR_LATER    ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IS_IPHONE_4_or_5 (IS_IPHONE && ([[UIScreen mainScreen] bounds].size.height <= 568.0))
+
+#define IS_IPHONE_5 (IS_IPHONE && ([[UIScreen mainScreen] bounds].size.height == 568.0) && ((IS_OS_8_OR_LATER && [UIScreen mainScreen].nativeScale == [UIScreen mainScreen].scale) || !IS_OS_8_OR_LATER))
+
+#define IS_STANDARD_IPHONE_6 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 667.0  && IS_OS_8_OR_LATER && [UIScreen mainScreen].nativeScale == [UIScreen mainScreen].scale)
+#define IS_ZOOMED_IPHONE_6 (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 568.0 && IS_OS_8_OR_LATER && [UIScreen mainScreen].nativeScale > [UIScreen mainScreen].scale)
+#define IS_STANDARD_IPHONE_6_PLUS (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 736.0)
+#define IS_ZOOMED_IPHONE_6_PLUS (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 667.0 && IS_OS_8_OR_LATER && [UIScreen mainScreen].nativeScale < [UIScreen mainScreen].scale)
+
+#ifdef DEBUG
+#define LRLog(...) NSLog(@"%s 第%d行 \n %@\n\n",__func__,__LINE__,[NSString stringWithFormat:__VA_ARGS__])
+#else
+#define LRLog(...)
+#endif
+
+
+//宽高
+#define kScreenWidth [[UIScreen mainScreen] bounds].size.width //屏幕宽
+#define kScreenHeight [[UIScreen mainScreen] bounds].size.height //屏幕高
+#define SCREEN_WIDTH self.view.frame.size.width
+#define SCREEN_HEIGHT self.view.frame.size.height
+#define kScreenWidthP [[UIScreen mainScreen]bounds].size.width/375.0f
+#define kScaleW ([[UIScreen mainScreen]bounds].size.width/375.f)
+#define kScaleH ([[UIScreen mainScreen]bounds].size.height/667.f)
+#define KScalwh(f) (kScreenWidth/kScreenHeight)*f
+#define kTabBarH        49.0f
+#define kStatusBarH     20.0f
+#define kNavigationBarH 44.0f
+#define statusBarHeight [[UIApplication sharedApplication] statusBarFrame].size.height
+#define tabBarHeight self.tabBarController.tabBar.bounds.size.height
+#define navigationBarHeight  self.navigationController.navigationBar.bounds.size.height
+
+#define SCREEN_POINT (float)SCREEN_WIDTH/320.f
+#define SCREEN_H_POINT (float)SCREEN_HEIGHT/480.f
+
+//颜色
+// rgb颜色转换（16进制->10进制）
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+//带有RGBA的颜色设置
+#define RGBA(R,G,B,A)  [UIColor colorWithRed:R/255.0f green:G/255.0f blue:B/255.0f alpha:A]
+#define sRGBA [UIColor colorWithDisplayP3Red:R/255.0f green:G/255.0f blue:B/255.0f alpha:A];
+#define kColorM ([UIColor colorWithRed:1.f green:102.f/255.f blue:0.f alpha:1.f])
+#define kColorMHighlight ([UIColor colorWithRed:1.f green:155.f/255.f blue:82.f/255.f alpha:1.f])
+#define kColorCellSelected ([UIColor colorWithRed:238.f/255.f green:238.f/255.f blue:238.f/255.f alpha:1.f])
+//----------------------设置随即颜色----------------------------
+#define LRRandomColor [UIColor colorWithRed:arc4random_uniform(256)/255.0 green:arc4random_uniform(256)/255.0 blue:arc4random_uniform(256)/255.0 alpha:1.0]
+
+
+//方正黑体简体字体定义
+#define FONT(F) [UIFont fontWithName:@"FZHTJW--GB1-0" size:F]
+
+
+//----------------------强引用、弱引用----------------------------
+#define kWeakSelf(type)  __weak typeof(type) weak##type = type;
+#define kStrongSelf(type)  __strong typeof(type) type = weak##type;
+
+//NSUserDefaults
+#define UserDefaultSetObjectForKey(__VALUE__,__KEY__) \
+{\
+[[NSUserDefaults standardUserDefaults] setObject:__VALUE__ forKey:__KEY__];\
+[[NSUserDefaults standardUserDefaults] synchronize];\
+}
+
+/**
+ *  get the saved objects       获得存储的对象
+ */
+#define UserDefaultObjectForKey(__KEY__)  [[NSUserDefaults standardUserDefaults] objectForKey:__KEY__]
+
+/**
+ *  delete objects      删除对象
+ */
+#define UserDefaultRemoveObjectForKey(__KEY__) \
+{\
+[[NSUserDefaults standardUserDefaults] removeObjectForKey:__KEY__];\
+[[NSUserDefaults standardUserDefaults] synchronize];\
+}
+
+//NSLocalizedString
+#define  LSTR(str)  NSLocalizedString(str, nil)
+#if DEBUG
+//@"http://120.25.69.28:6689"//测试服务器
+//@"https://caipiao.asopeixun.com:6688"//正式服务器
+#define LOTTERY_HOST_NAME @"http://120.25.69.28:6689"
+
+#else
+#define LOTTERY_HOST_NAME @"https://caipiao.asopeixun.com:6688"
+
+#endif
+
+
+
+#define DATE_TO_APPSTORY_BEGIN @"DATE_TO_APPSTORY_BEGIN" //开始点击去评论
+#define DATE_BACK_APPSTORY_END   @"DATE_BACK_APPSTORY_END"    //从 appstory 返回的时间
+#define ISAPPSTROY @"ISAPPSTROY"       //是否是从 appstory 返回
+//bugly
+#define kBuglyAppid @"a7a6a04eba"
+#define kBuglyAppkey @"b3b954d2-f47e-4493-a077-afa839a643a8"
+//UM
+#define UM_appkey  @"586c67b71061d25fbd00001a"
+//wx
+#define kAuthScope  @"snsapi_message,snsapi_userinfo,snsapi_friend,snsapi_contact"
+#define kAuthOpenID  @"wxd1feaaf0535508ea"
+#define kAuthOpensecret @"bceabced83616634b4a56f6f0e8f984c"
+#define kAuthState   @"LottortNews"
+
+
+
+#define kStoreList    @[@{@"product_id":@"cdskhd_588_888" ,@"describe":@"588元兑换888个金币"},@{@"product_id":@"cdskhd_188_258" ,@"describe":@"188元兑换258个金币"},@{@"product_id":@"cdskhd_88_100"  ,@"describe":@"88元兑换100个金币"},@{@"product_id":@"cdskhd_6_6"  ,@"describe":@"6元兑换6个金币"}]
+
+
+
+
+
+
+typedef enum ScrollDirection {
+    ScrollDirectionNone,
+    ScrollDirectionRight,
+    ScrollDirectionLeft,
+    ScrollDirectionUp,
+    ScrollDirectionDown,
+    ScrollDirectionCrazy,
+} ScrollDirection;
+
+#import "UIColor+Extension.h"
+//第三方
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <Masonry/Masonry.h>
+#import <UMMobClick/MobClick.h>
+#endif /* LotteryNews_pch */

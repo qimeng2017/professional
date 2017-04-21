@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>用户信息</string>
+			<key>imageName</key>
+			<string></string>
+		</dict>
+	</array>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>签到送金币</string>
+			<key>imageName</key>
+			<string>jinbi_sign</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>我的购买</string>
+			<key>imageName</key>
+			<string>goumai</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>充值记录</string>
+			<key>imageName</key>
+			<string>chongzhi</string>
+		</dict>
+	</array>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>玩法说明</string>
+			<key>imageName</key>
+			<string>wanfashuoming</string>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>联系我们</string>
+			<key>imageName</key>
+			<string>lianxiwom</string>
+		</dict>
+	</array>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>绑定微信</string>
+			<key>imageName</key>
+			<string>weixin_bind</string>
+		</dict>
+	</array>
+</array>
+</plist>
